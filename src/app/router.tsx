@@ -1,14 +1,17 @@
 import {createBrowserRouter, redirect} from "react-router-dom";
 import App from "./App.tsx";
-import {LoginPage} from "../pages/login/LoginPage.tsx";
-import {meAuth} from "../service/login-api.ts";
+import {RegisterPage} from "../pages/auth/RegisterPage.tsx";
+import {LoginPage} from "../pages/auth/LoginPage.tsx";
+import {meAuth} from "../service/auth/auth-api.ts";
 
-export const loader = async () => {
-    const user = await meAuth()
-    // if (!user) {
-    //     return redirect("/");
-    // }
-    return null;
+export const authLoader = async () => {
+    try{
+        await meAuth();
+        return null;
+    }
+    catch (e){
+        return redirect("/login")
+    }
 }
 export const router = createBrowserRouter([
     {
@@ -16,11 +19,15 @@ export const router = createBrowserRouter([
         element: <App/>,
         children: [
             {
-                path:'/chatDashboard'
+                path:'/chatDashboard',
+                loader:authLoader,
             }
         ],
-        loader:loader,
-        hasErrorBoundary:false
+        loader:authLoader
+    },
+    {
+        path: "/register",
+        element: <RegisterPage/>,
     },
     {
         path: "/login",

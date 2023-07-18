@@ -1,22 +1,20 @@
-// @ts-ignore
-import {RegisterOptions} from "react-hook-form/dist/types/validator";
-// @ts-ignore
-import {UseFormRegister} from "react-hook-form/dist/types/form";
+import {UseFormRegister, RegisterOptions, FieldValues, Path} from "react-hook-form";
 import styled from "styled-components";
 import {FieldError} from "react-hook-form";
 
-type FormInputPropsType = {
-    title:string
-    formName: string,
-    options? :RegisterOptions
-    register:UseFormRegister
-    error:  FieldError | undefined
+export type FormInputPropsType<T extends FieldValues> = {
+    title: string
+    formName: string
+    options?: RegisterOptions
+    register: UseFormRegister<T>
+    error: FieldError | undefined
 }
-export const FormInput = ({register,error,title,formName,options}:FormInputPropsType) => {
+
+export function FormInput<T extends FieldValues>({register, error, title, formName, options}: FormInputPropsType<T>) {
     return (
         <InputContainer>
             <span>{title}</span>
-            <StyledInput {...register(formName, options)}/>
+            <StyledInput {...register(formName as Path<T>, options)}/>
             {error && <ErrorSpan>{error.message}</ErrorSpan>}
         </InputContainer>)
 }
@@ -39,4 +37,4 @@ const StyledInput = styled.input`
 const ErrorSpan = styled.span`
   align-self: flex-start;
   margin-left: 50px;
-color:red`
+  color: red`
