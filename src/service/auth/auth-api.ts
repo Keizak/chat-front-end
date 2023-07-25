@@ -1,7 +1,9 @@
 import {useMutation} from "react-query";
 import {axiosInstance} from "../axiosInstance.ts";
 import {LoginFormType, RegisterFormType} from "./types.ts";
-import {redirect} from "react-router-dom";
+import {enqueueSnackbar} from "notistack";
+import {AxiosError, AxiosPromise} from "axios";
+import {navigateTo} from "../../shared/helpers";
 
 
 export const useRegisterMutation = () => {
@@ -10,15 +12,11 @@ export const useRegisterMutation = () => {
     }, {
         onSuccess: (data) => {
             localStorage.setItem("chat-token", data.data.token)
-
-            // TODO
-            console.log(1223)
-            new Response("", {
-                status: 302,
-                headers: {
-                    Location: "/login",
-                },
-            });
+            enqueueSnackbar({message:"Success",variant:"success"})
+            navigateTo("/login")
+        },
+        onError: (e:AxiosError<{ message: string }>) => {
+            enqueueSnackbar({message:e.response?.data?.message,variant:"error"})
         }
     })
 }
@@ -29,16 +27,30 @@ export const useLoginMutation = () => {
     }, {
         onSuccess: (data) => {
             localStorage.setItem("chat-token", data.data.token)
-            redirect("/chatDashboard")
+            enqueueSnackbar({message:"Success",variant:"success"})
+            navigateTo("/chatDashboard")
+
+        },
+        onError: (e:AxiosError<{ message: string }>) => {
+            enqueueSnackbar({message:e.response?.data?.message,variant:"error"})
         }
     })
 }
 
 export const useGetMeQuery = () => {
-    return useMutation("meAuth", () => axiosInstance.get('/me'))
+    return useMutation("meAuth", () => axiosInstance.post('/api/auth/me'))
 }
 
 
-export const meAuth = () => {
+export interface UserType {
+    chatIds: string[];
+    password: string;
+    phone: string;
+    token: string;
+    userName: string;
+    __v: number;
+    _id: string;
+}
+export const meAuth = ():AxiosPromise<UserType> => {
     return axiosInstance.post('/api/auth/me')
 }

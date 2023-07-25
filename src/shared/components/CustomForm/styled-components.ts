@@ -2,6 +2,7 @@ import styled from "styled-components";
 import {FlexBlock} from "../../styled-components";
 
 export const FormContainer = styled(FlexBlock)`
+  flex-direction: column;
   background: #dad8d8;
   padding: 20px;
   align-items: center;

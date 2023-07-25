@@ -1,6 +1,6 @@
 import {useLoginMutation} from "../../service/auth/auth-api.ts";
 import {SubmitHandler} from "react-hook-form";
-import {LoginFormType} from "../../service/auth/types.ts";
+import {LoginFormType, RegisterFormType} from "../../service/auth/types.ts";
 
 import {CustomForm, FormInputType} from "../../shared/components";
 
@@ -21,7 +21,6 @@ export const LoginPage = () => {
 
     return <>
         <button onClick={registerClickHandler}>Регистрация</button>
-        <CustomForm<LoginFormType> onSubmit={onSubmit} submitTitle={"Войти"} forms={forms}/>
-
+        <CustomForm<RegisterFormType> onSubmit={onSubmit} submitTitle={"Войти"} forms={forms}/>
     </>
 }

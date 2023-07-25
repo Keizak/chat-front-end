@@ -3,8 +3,14 @@ import {FormInput, FormInputPropsType} from "../FormInput/FormInput.tsx";
 import {FormContainer, FormStyledButton} from "./styled-components.ts";
 import {CustomFormPropsType, FormInputType} from "./types.ts";
 
-
-export function CustomForm<T extends FieldValues>({submitTitle, onSubmit, forms}: CustomFormPropsType<T>) {
+const defaultStyleForm = {width: "80%"}
+export function CustomForm<T extends FieldValues>({
+                                                      submitTitle,
+                                                      onSubmit,
+                                                      forms,
+                                                      FormContainerComponent = FormContainer,
+                                                      formStyle = defaultStyleForm
+                                                  }: CustomFormPropsType<T>) {
     const {
         register,
         handleSubmit,
@@ -17,13 +23,14 @@ export function CustomForm<T extends FieldValues>({submitTitle, onSubmit, forms}
 
     const displayForms = createDisplayForms(forms, errors, register)
 
+
     return (
-        <FormContainer flexDirection={"column"}>
-            <form onSubmit={handleSubmit(onSubmit)} style={{width: "80%"}}>
-                {displayForms.map((form,index) => <FormInput {...form} key={form.formName+ index}/>)}
+        <FormContainerComponent>
+            <form onSubmit={handleSubmit(onSubmit)} style={formStyle} >
+                {displayForms.map((form, index) => <FormInput {...form} key={form.formName + index}/>)}
                 <FormStyledButton type={"submit"}>{submitTitle}</FormStyledButton>
             </form>
-        </FormContainer>
+        </FormContainerComponent>
     );
 }
 
