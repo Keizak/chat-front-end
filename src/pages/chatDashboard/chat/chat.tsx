@@ -2,8 +2,64 @@ import {FlexBlock} from "../../../shared/styled-components";
 import styled from "styled-components";
 import {CustomForm} from "../../../shared/components";
 import {messageField} from "../../../shared/constants/forms/message.ts";
+import {useEffect} from "react";
+import {io} from "socket.io-client";
+import {UserType} from "../../../service/auth/auth-api.ts";
 
-export  const Chat = () => {
+export interface MessageInterface {
+    id: string
+    text: string
+    addedAt:string
+    userId: string
+}
+
+export interface UserInterface {
+    id:string
+    name: string
+    chats : string[]
+}
+
+export interface ChatInterface {
+    id:string
+    messages: MessageInterface[]
+}
+
+type MessageFromType = {
+    message:string
+}
+
+
+const socket = io("http://localhost:3000/", {
+    autoConnect: false,
+});
+
+type ChatPropsType = {
+    currentContact: UserType
+}
+
+export  const Chat = ({currentContact}:ChatPropsType) => {
+
+    useEffect(() => {
+        socket.connect()
+        socket.on("server response",(message:string) => {
+            console.log(message)
+        })
+
+        // Обработка события получения сообщения
+        socket.on('update', (chat:ChatInterface) => {
+            // setDisplayMessage(chat.messages)
+        });
+    }, [])
+
+    const sendMessage = (message:string,chatId: string,userId:string) => {
+        return socket.emit("send message",{message:message,chatId:chatId,userId:userId})
+    }
+
+
+    const sendMessageHandler = (data:MessageFromType) => {
+        console.log(data,"data")
+        sendMessage(data.message,currentContact._id)
+    }
 
 
     const messageForm = [messageField]
@@ -13,9 +69,10 @@ export  const Chat = () => {
             <StyledMessages></StyledMessages>
             <StyledInput>
                 <CustomForm
+                    <MessageFromType>
                     formStyle={{display:"flex",width:"100%"}}
                     FormContainerComponent={StyledForm}
-                    onSubmit={() => console.log(12)}
+                    onSubmit={sendMessageHandler}
                     submitTitle="Отправить сообщение"
                     forms={messageForm}/>
             </StyledInput>

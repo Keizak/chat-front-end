@@ -14,7 +14,7 @@ export const ChatDashboard = () => {
     return (
         <StyledContainer>
             <UserPanel setCurrentContact={setCurrentContact}/>
-            {currentContact && <Chat />}
+            {currentContact && <Chat currentContact={currentContact}/>}
         </StyledContainer>
     )
 }

@@ -15,9 +15,7 @@ function App() {
     const [userName,setUserName] = useState("")
     const [displayMessage,setDisplayMessage] = useState<MessageInterface[]>([])
 
-    const sendMessage = (message:string,chatId: string,userId:string) => {
-        return socket.emit("send message",{message:message,chatId:chatId,userId:userId})
-    }
+
 
     const setUserConnected = (userName:string,userId:string) => {
         return socket.emit("user connected",{name:userName,id:userId})
@@ -71,20 +69,3 @@ function App() {
 
 export default App
 
-export interface MessageInterface {
-    id: string
-    text: string
-    addedAt:string
-    userId: string
-}
-
-export interface UserInterface {
-    id:string
-    name: string
-    chats : string[]
-}
-
-export interface ChatInterface {
-    id:string
-    messages: MessageInterface[]
-}
